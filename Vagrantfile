@@ -17,7 +17,10 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
+    v.cpus = 2
+  end
 
   config.vm.box = "centos/7"
   #config.vm.synced_folder "share/", "/home/vagrant"
@@ -28,11 +31,16 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 7003, host: 7003
   config.vm.network "forwarded_port", guest: 7004, host: 7004
 
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2048
+    v.cpus = 2
+  end
   # Configure the guest machine
   config.vm.provision "shell", inline: <<-SHELL
   echo "Configuring VM for LWOL Course...."
   echo "Setting SELinux to Permissive mode"
   sudo setenforce 0
+
 
   echo "Setting up required packages"
   sudo yum -y update
@@ -46,7 +54,7 @@ Vagrant.configure("2") do |config|
   sudo usermod -a -G docker vagrant
   docker run hello-world
   mkdir -p /home/vagrant/oracle_docker
-  chown vagrant:vagrant /home/vagrant/oracle_docker
+  sudo chown -R vagrant:vagrant /home/vagrant/oracle_docker
   SHELL
 
 end
